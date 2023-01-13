@@ -138,6 +138,11 @@
     candyCount = document.getElementById('totalcandies').value;// update candyCount
     maxStep = document.getElementById('maxsteps').value;//update maxStep
     alert(maxStep)
+    //check valid
+    if(parseInt(maxStep)>parseInt(candyCount)){
+      alert("don't on9 please, back home eat shit")
+      return
+    }
     // clear all button 
     const myNode = document.getElementById("mainComponents");
     myNode.innerHTML = '';
