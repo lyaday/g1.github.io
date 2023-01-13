@@ -4,49 +4,42 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
-<div>
-  <h2>Let's Play Jessica!!!</h2>
+<div class="maincontainer">
+  <h2>Let's Play!!!</h2>
   <div>
     <p>There are 20 candies. You and the computer take turns selecting one, two, or three candies each turn. Whoever takes the last candy wins the game.</p>
+      <label for="fname">Total Candies:</label>
+      <input id="totalcandies" min="0" type="number" value="20"><br><br>
+      <label for="lname">Maximum Candies taking:</label>
+      <input id="maxsteps" min="0" type="number"  value="3"><br><br>
+      <button id="Confirm" >Confirm</button>
     <div>
       <p>Candy Remaining: <span id="candy-count">20</span> </p>
-      <p id="candy-count-icons">
-      </p> 
+      <p id="candy-count-icons"></p> 
 
       <p id="computer-count"></p>
-      <button id="one-candy" class = "button">Take One Candy</button>
-      <button id="two-candies" class = "button">Take Two Candies</button>
-      <button id="three-candies" class = "button">Take Three Candies</button>
+      <div id = "mainComponents">
+      <button id="one-candy" class = "button">Take 1</button>
+      <button id="two-candies" class = "button">Take 2</button>
+      <button id="three-candies" class = "button">Take 3</button>
+      </div>
+      
       <button id="reset" class = "button2">Reset</button>
-    </div>
   </div>
 </div>
 
 <script>
   let candyCount = 20;
   var playerPick = 0;
+  var maxStep = 3
+  var originalTotal = 20;
 
-  function handleChose(num){
-  	for( var x = 0; x<num; x++){
-  		document.getElementById('candy-count-icons').childNodes[candyCount].style.color = "blue";
-  		candyCount = candyCount-1
-  	}
-  	
-    playerPick = num;
-    document.getElementById('candy-count').innerHTML = candyCount;
-    if (candyCount === 0) {
-      alert('You won!');
+  for(var x = 0; x<candyCount; x++){
+      node = document.createElement("span");
+      node.classList.add("glyphicon")
+      node.classList.add("glyphicon-glass")
+      document.getElementById('candy-count-icons').appendChild(node);
     }
-    computerRound()
-  }
-
-  document.getElementById('candy-count').innerHTML = candyCount;
-  for(var x = 0; x<20; x++){
-  	const node = document.createElement("span");
-  	node.classList.add("glyphicon")
-  	node.classList.add("glyphicon-glass")
-  	document.getElementById('candy-count-icons').appendChild(node);
-  }
 
 
   document.getElementById('one-candy').onclick = function() {
@@ -60,45 +53,119 @@
   document.getElementById('three-candies').onclick = function() {
     handleChose(3)
   };
+  document.getElementById('Confirm').onclick = function() {
+    refreshPages()
+  };
 
   document.getElementById('reset').onclick = function() {
-  	candyCount = 20;
+  // checking how many icons are there
+    let numb = document.getElementById("candy-count-icons").children.length;
+  	candyCount = numb;
   	playerPick = 0;
-  	computerpick = 0;
-    for( var x = 1; x<=20; x++){
+  	// computerpick = 0;
+    for( var x = 0; x<numb; x++){
   		document.getElementById('candy-count-icons').childNodes[x].style.color = "black";
   	}
   	document.getElementById('candy-count').innerHTML = candyCount;
-  	document.getElementById('computer-count').innerHTML = "computer Picks " + computerpick
+  	document.getElementById('computer-count').innerHTML = ""
   };
 
+  function handleChose(num){
+    num = parseInt(num)
+    for( var x = 0; x<num; x++){
+      document.getElementById('candy-count-icons').childNodes[candyCount-1].style.color = "blue";
+      candyCount = candyCount-1
+    }
+    
+    playerPick = num;
+    document.getElementById('candy-count').innerHTML = candyCount;
+    if (candyCount === 0) {
+      alert('You won!');
+    }
+    else{
+      computerRound()
+    }
+  }
 
-  function computerRound(){
-  	setTimeout(function(){}, 1000); 
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
 
-  	var computerpick = 0
-  	if(candyCount<4){
-  		computerpick=candyCount
+  function computerRound(){  // handling computer choice
+
+    // check if there is amy reminder
+    var computerpick = 0
+    let rmaxStep = parseInt(maxStep)
+    rmaxStep=rmaxStep+1
+    if(candyCount<rmaxStep){
+      console.log("S1")
+      computerpick=candyCount
+    }
+    else if(originalTotal%rmaxStep == 0){
+      console.log("S2")
+      computerpick = rmaxStep-playerPick
+    }
+  	else{ // try to get to the nearest number that can be divided by maxStep
+      console.log("S3")
+      if(candyCount%rmaxStep == 0){// random give a number cuz it is going to lose
+        console.log("big lemon cola")
+        computerpick=getRandomInt(rmaxStep)
+      }
+      else{
+        computerpick = candyCount%rmaxStep
+      }
+  		
   	}
-  	else{
-  		computerpick = 4-playerPick
-  	}
+    alert("computer pick"+computerpick)
   	for( var x = 0; x<computerpick; x++){
-  		document.getElementById('candy-count-icons').childNodes[candyCount].style.color = "red";
+  		document.getElementById('candy-count-icons').childNodes[candyCount-1].style.color = "yellow";
   		candyCount = candyCount-1
   	}
   	document.getElementById('candy-count').innerHTML = candyCount;
   	document.getElementById('computer-count').innerHTML = "computer Picks " + computerpick
-
+  console.log('computer won!')
  	if (candyCount === 0) {
   		alert('computer won!');
 	}
 
   }
 
+
+  function refreshPages(){ // redate number of button and number of diagram
+    candyCount = document.getElementById('totalcandies').value;// update candyCount
+    maxStep = document.getElementById('maxsteps').value;//update maxStep
+    alert(maxStep)
+    // clear all button 
+    const myNode = document.getElementById("mainComponents");
+    myNode.innerHTML = '';
+    // update buttons according to maxStep
+    for(var x = 1; x<=maxStep; x++){
+      let btn = document.createElement("button");
+      btn.innerHTML = "take "+x;
+      let stay = x;
+      btn.addEventListener("click", function() {handleChose(stay)});
+      btn.classList = "button"
+      myNode.appendChild(btn);
+    }
+
+    //update icon according to totalcandies
+    const myNode2 = document.getElementById("candy-count-icons");
+    myNode2.replaceChildren();
+    //document.getElementById('candy-count-icons').innerHTML=''
+    document.getElementById('candy-count').innerHTML = candyCount;
+    for(var x = 0; x<candyCount; x++){
+      node = document.createElement("span");
+      node.classList.add("glyphicon")
+      node.classList.add("glyphicon-glass")
+      document.getElementById('candy-count-icons').appendChild(node);
+    }
+    document.getElementById('candy-count').innerHTML = candyCount;
+    originalTotal=candyCount
+    }
+
 </script>
 <style>
-div {
+.maincontainer {
   height: 100%;
   width: 100%;
   background-color: powderblue;
