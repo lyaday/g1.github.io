@@ -72,6 +72,10 @@
 
   function handleChose(num){
     num = parseInt(num)
+    if(candyCount < num){
+      alert('You on9, go home find you mammy get the reminning candy you want! but u win hahaha');
+      return
+    }
     for( var x = 0; x<num; x++){
       document.getElementById('candy-count-icons').childNodes[candyCount-1].style.color = "blue";
       candyCount = candyCount-1
@@ -87,9 +91,7 @@
     }
   }
 
-  function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-  }
+ 
 
   function computerRound(){  // handling computer choice
 
@@ -109,7 +111,8 @@
       console.log("S3")
       if(candyCount%rmaxStep == 0){// random give a number cuz it is going to lose
         console.log("big lemon cola")
-        computerpick=getRandomInt(rmaxStep)
+        computerpick = Math.floor((Math.random() * maxStep) + 1);
+        console.log(computerpick)
       }
       else{
         computerpick = candyCount%rmaxStep
